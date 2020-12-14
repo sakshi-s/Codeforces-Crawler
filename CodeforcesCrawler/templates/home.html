@@ -1,12 +1,19 @@
-{% extends "base.html" %}
+{% extends "header.html" %}
+{% block title %} CF Crawler {% endblock %}
 
 {% block content %}
-<a href="/accounts/register" >Register!</a>
-<a href="/accounts/login" >Login</a>
-<a href="/accounts/logout" >Logout</a>
+
+
 <div class="container">
     <div class="jumbotron" style="background-color: rgb(233, 224, 211);">
       <h1>Welcome to the CF Crawler!</h1>
+      {% if user.is_authenticated %}
+          <h2>Hello <strong>{{ user.username }}</strong></h2>
+<!--            <h2>Hello <strong>{{ user.id }}</strong></h2>-->
+      {% else %}
+          <h2>Register or Login if you want to know about other coders</h2>
+      {% endif %}
     </div>
-</div>
+  </div>
+    
 {% endblock %}
