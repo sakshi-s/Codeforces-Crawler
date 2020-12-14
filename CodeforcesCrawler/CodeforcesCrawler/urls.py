@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('timetable', views.timetable, name='timetable'),
+    path('iitg', views.iitg, name='iitg'),
     path('accounts/', include('accounts.urls')),
     path('cfhandler/', include('cfhandler.urls')),
 ]

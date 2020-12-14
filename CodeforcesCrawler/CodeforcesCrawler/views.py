@@ -5,3 +5,6 @@ def home(request):
 
 def timetable(request):
     return render(request, 'timetable.html')
+
+def iitg(request):
+    return render(request, 'iitg.html')
