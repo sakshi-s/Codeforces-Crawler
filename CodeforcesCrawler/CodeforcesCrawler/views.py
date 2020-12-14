@@ -8,3 +8,6 @@ def timetable(request):
 
 def iitg(request):
     return render(request, 'iitg.html')
+
+def search(request):
+    return render(request, 'searchhandle.html')

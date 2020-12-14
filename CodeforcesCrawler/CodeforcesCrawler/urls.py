@@ -20,10 +20,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path('', views.home, name='home'),
     path('timetable', views.timetable, name='timetable'),
     path('iitg', views.iitg, name='iitg'),
+    path('search', views.search, name='search'),
     path('accounts/', include('accounts.urls')),
     path('cfhandler/', include('cfhandler.urls')),
 ]

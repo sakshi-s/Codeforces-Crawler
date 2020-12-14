@@ -69,3 +69,6 @@ def iitg(request):
             coder_info.append(columns[3].text.strip())
             coders.append(coder_info)
     return render(request, 'cfiitg.html', {'coders':coders})
+
+def cfsearch(request):
+    return render(request, 'cfsearch.html')
