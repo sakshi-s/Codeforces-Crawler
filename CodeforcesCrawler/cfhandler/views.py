@@ -71,4 +71,19 @@ def iitg(request):
     return render(request, 'cfiitg.html', {'coders':coders})
 
 def cfsearch(request):
-    return render(request, 'cfsearch.html')
+    if( request.method == 'POST') :
+        handle = request.POST['handle']
+        start_url = "https://www.codeforces.com/"
+        print(handle)
+        cf_handle = handle
+        contests_url = start_url + 'profile/' + cf_handle
+        print(contests_url)
+        page = requests.get(contests_url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+
+        title = soup.find('title').text
+        print(title)
+        return render(request, 'cfsearch.html')
+
+    else :
+        return render(request, 'cfsearch.html')
