@@ -1,0 +1,26 @@
+{% extends 'header.html' %}
+
+{% block title %}
+Code Forces Time Table
+{% endblock %}
+
+{% block content %}
+<h2>Contest Details of Upcoming Contests on Codeforces:</h2>
+
+<div class="contest-view">
+    
+        <ul>
+            {% for contest in contest_list %}
+                <br>
+                <li><h4>Name:<a href="https://codeforces.com/contests"> {{contest.0}}</a></h4></li>
+                <h4>Creator: {{contest.1}}</h4>
+                <h4>Start Date and Time: {{contest.2}}</h4>
+                <h4>Duration: {{contest.3}}</h4>
+                <h4>Remaining Time/Days: {{contest.4}}</h4>
+                <br>
+            {% endfor %}
+            
+        </ul>
+    
+</div>
+{% endblock %}
