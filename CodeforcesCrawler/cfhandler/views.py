@@ -25,50 +25,47 @@ def timetable(request):
     return render(request, 'cftimetable.html', {'contest_list': contest_list})
 
 def iitg(request):
-    url1 = "https://codeforces.com/ratings/organization/297"
-    page1 = requests.get(url1)
-    soup1 = BeautifulSoup(page1.content, 'html.parser')
-    div1 = soup1.find_all('div', class_='pagination')
+    url = "https://codeforces.com/ratings/organization/297"
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    num_pages_div = soup.find_all('div', class_='pagination')
 
-    if len(div1) == 1:
-        t = 1
+    if len(num_pages_div) == 1:
+        num_pages = 1
     else:
-        ul = div1[1].find('ul')
+        ul = num_pages_div[1].find('ul')
         li = ul.find_all('li')
+        num_pages = int(li[-2].text)
 
-        t = int(li[-2].text)
-
-    dic = []
-    for i in range(t + 1):
+    coders = []
+    i = 1
+    for i in range(num_pages + 1):
         url = "https://codeforces.com/ratings/organization/297/page/" + str(i+1)
-        # print(url)
         page = requests.get(url)
-        bs = BeautifulSoup(page.content, 'html.parser')
-        div = bs.find_all('div',class_='datatable ratingsDatatable')
-        # print(div)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        div = soup.find_all('div',class_='datatable ratingsDatatable')
         tables = div[0].find_all('table')
 
-        sec=tables[0].find_all('tr')
-        for item in sec:
-            secx = item.find_all('td')
+        rows = tables[0].find_all('tr')
+        for row in rows:
+            columns = row.find_all('td')
 
-            if len(secx) == 0:
+            if len(columns) == 0:
                 continue
-            list = []
-            stri = secx[0].text.strip()
-            r = 0
-            for e in stri:
-                if e =='(':
+            coder_info = []
+            column_text = columns[0].text.strip()
+            rating = 0
+            for char in column_text:
+                if char =='(':
                     break
-                if e>='0' and e<='9':
-                    r = r*10 + int(e)
-            if r==0:
+                if char>='0' and char<='9':
+                    rating = rating*10 + int(char)
+            if rating == 0:
                 continue
-            list.append(r)
-            list.append(secx[1].text.strip())
-            list.append(sec[1].find_all('a')[0]['class'][1])
-            list.append(secx[2].text.strip())
-            list.append(secx[3].text.strip())
-            dic.append(list)
-    print(dic)
-    return render(request, 'iitg.html', {'dic':dic})
+            coder_info.append(rating)
+            coder_info.append(columns[1].text.strip())
+            coder_info.append(rows[1].find_all('a')[0]['class'][1])
+            coder_info.append(columns[2].text.strip())
+            coder_info.append(columns[3].text.strip())
+            coders.append(coder_info)
+    return render(request, 'cfiitg.html', {'coders':coders})
