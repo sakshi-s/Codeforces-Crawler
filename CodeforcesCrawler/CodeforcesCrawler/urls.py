@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from cfhandler import views as views1
+from cfhandler import views as cfviews
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -25,8 +25,8 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('timetable', views.timetable, name='timetable'),
     path('iitg', views.iitg, name='iitg'),
-    path('cfhandler/cfsearch/<str:handle>', views1.userprofile, name='userprofile'),
-    #path('cfhandler/contest/<str:handle>', v.contest, name='contest-statistics'),
+    path('cfhandler/cfsearch/<str:handle>', cfviews.userprofile, name='userprofile'),
+    #path('cfhandler/contest/<str:handle>', cfviews.contest, name='contest-statistics'),
     path('search', views.search, name='search'),
     path('accounts/', include('accounts.urls')),
     path('cfhandler/', include('cfhandler.urls')),
