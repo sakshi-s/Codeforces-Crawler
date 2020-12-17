@@ -1,6 +1,18 @@
 from django.shortcuts import render, redirect
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime, date
+from django.contrib.auth.decorators import login_required
+import re
+from urllib.request import urlopen
+from django.views.generic import TemplateView
+from . import fusioncharts
+import pandas as pd
+from matplotlib import pyplot as plt
+from .models import *
+from collections import OrderedDict
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 # Create your views here.
 def timetable(request):
@@ -94,6 +106,9 @@ def userprofile(request, handle):
 
 def contest(request,handle):
     fcs = fetch_contest_stats(handle)
+    # chart = {"output_languages" :  display_stats_languages(handle).render()
+    # }
+    # fcs.update(chart)
 
     return render(request, 'contest_stats.html', fcs)
 
@@ -133,3 +148,4 @@ def fetch_contest_stats(handle):
     }
 
     return stats
+
