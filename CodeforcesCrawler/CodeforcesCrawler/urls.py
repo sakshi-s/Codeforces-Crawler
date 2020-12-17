@@ -26,7 +26,7 @@ urlpatterns = [
     path('timetable', views.timetable, name='timetable'),
     path('iitg', views.iitg, name='iitg'),
     path('cfhandler/cfsearch/<str:handle>', cfviews.userprofile, name='userprofile'),
-    #path('cfhandler/contest/<str:handle>', cfviews.contest, name='contest-statistics'),
+    path('cfhandler/contest/<str:handle>', cfviews.contest, name='contest-statistics'),
     path('search', views.search, name='search'),
     path('accounts/', include('accounts.urls')),
     path('cfhandler/', include('cfhandler.urls')),

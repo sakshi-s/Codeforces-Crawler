@@ -10,17 +10,14 @@ Search Handle
     <form method="POST" class="form-group" action="cfsearch">
         {% csrf_token %}
         <div class="form-group">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  What do you want to search?
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="/">Search User</a><br>
-                  <a class="dropdown-item" href="#">Search Contest</a><br>
-                </div>
+            <div class="form-group">
+                <label>Select type of handle:</label>
+                <select class="form-control" name="reqtype">
+                  <option>User Handle</option>
+                  <option>Contest Handle</option>
+                </select>
               </div>
-              <div>
-                <label>Handle</label><br>
+                <label>Enter Handle</label><br>
                 <input type="text" name="handle" placeholder="User or contest handle">
               </div>
           </div>

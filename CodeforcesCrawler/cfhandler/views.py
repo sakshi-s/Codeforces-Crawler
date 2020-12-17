@@ -73,7 +73,12 @@ def iitg(request):
 def cfsearch(request):
     if( request.method == 'POST') :
         handle = request.POST['handle']
-        return redirect('cfsearch/' + handle)
+        reqtype = request.POST['reqtype']
+        
+        if(reqtype == "User Handle"):
+            return redirect('cfsearch/' + handle)
+        else:
+            return redirect('contest/' + handle)
 
     else :
         return render(request, 'cfsearch.html')
@@ -88,57 +93,5 @@ def userprofile(request, handle):
     return render(request, 'userprofile.html', {'userinfo' : main_info.text})
 
 def contest(request,handle):
+    return redirect('/')
 
-    fcs = fetch_contest_stats(handle)
-    # chart = {"output_languages" :  display_stats_languages(handle).render(),
-    #         "output_verdicts" :  display_stats_verdicts(handle).render(),
-    #         "output_levels" :  display_stats_levels(handle).render(),
-    # }
-    # fcs.update(chart)
-
-    return render(request, 'contest_stats.html', fcs)
-
-    # fcs = fetch_contest_stats(handle)
-    # submissionsFigure(request)
-
-    # return render(request, 'figure_html.html', fcs)
-
-def fetch_contest_stats(handle):
-    start_url = "https://www.codeforces.com/"
-
-    cf_handle = handle
-    contests_url = start_url+'contests/with/'+cf_handle
-
-    page = requests.get(contests_url)
-    soup = BeautifulSoup(page.content, 'lxml')
-
-
-    table = soup.find('table', class_='tablesorter user-contests-table')
-    tbody = table.find('tbody')
-
-    ROWS = tbody.find_all('tr')
-
-    delta_rating = []
-    rank_list = []
-
-    for item in ROWS:
-        elements = item.find_all('td')
-        rank = int(elements[2].find('a').text)
-        rating_change = int(elements[4].text)
-
-        delta_rating.append(rating_change)
-        rank_list.append(rank)
-
-    delta_rating.sort()
-    rank_list.sort()
-
-    mydict = {
-        'Handle' : cf_handle,
-        'No_of_Contests' : ROWS[0].find('td').text,
-        'Best_Rank' : rank_list[0],
-        'Worst_Rank' : rank_list[len(rank_list)-1],
-        'Max_Up' : delta_rating[len(delta_rating)-1],
-        'Max_Down' : delta_rating[0],
-    }
-
-    return mydict
