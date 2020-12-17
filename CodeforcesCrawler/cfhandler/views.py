@@ -13,13 +13,13 @@ def timetable(request):
 
     rows = tables[0].find_all('tr')
     for row in rows:
-        columns = row.find_all('td')
-        columns = [column.text.strip() for column in columns]
+        elements = row.find_all('td')
+        elements = [element.text.strip() for element in elements]
 
-        if len(columns) > 0:
-            if columns[1] == '':
-                columns[1] = "Not Mentioned"
-            contest_list.append(columns)
+        if len(elements) > 0:
+            if elements[1] == '':
+                elements[1] = "Not Mentioned"
+            contest_list.append(elements)
 
 
     return render(request, 'cftimetable.html', {'contest_list': contest_list})
@@ -48,12 +48,12 @@ def iitg(request):
 
         rows = tables[0].find_all('tr')
         for row in rows:
-            columns = row.find_all('td')
+            elements = row.find_all('td')
 
-            if len(columns) == 0:
+            if len(elements) == 0:
                 continue
             coder_info = []
-            column_text = columns[0].text.strip()
+            column_text = elements[0].text.strip()
             rating = 0
             for char in column_text:
                 if char =='(':
@@ -63,10 +63,10 @@ def iitg(request):
             if rating == 0:
                 continue
             coder_info.append(rating)
-            coder_info.append(columns[1].text.strip())
+            coder_info.append(elements[1].text.strip())
             coder_info.append(rows[1].find_all('a')[0]['class'][1])
-            coder_info.append(columns[2].text.strip())
-            coder_info.append(columns[3].text.strip())
+            coder_info.append(elements[2].text.strip())
+            coder_info.append(elements[3].text.strip())
             coders.append(coder_info)
     return render(request, 'cfiitg.html', {'coders':coders})
 
@@ -75,7 +75,7 @@ def cfsearch(request):
         handle = request.POST['handle']
         reqtype = request.POST['reqtype']
         
-        if(reqtype == "User Handle"):
+        if(reqtype == "User Info"):
             return redirect('cfsearch/' + handle)
         else:
             return redirect('contest/' + handle)
@@ -93,5 +93,43 @@ def userprofile(request, handle):
     return render(request, 'userprofile.html', {'userinfo' : main_info.text})
 
 def contest(request,handle):
-    return redirect('/')
+    fcs = fetch_contest_stats(handle)
 
+    return render(request, 'contest_stats.html', fcs)
+
+def fetch_contest_stats(handle):
+    start_url = "https://www.codeforces.com/"
+
+    contests_url = start_url + 'contests/with/' + handle
+    page = requests.get(contests_url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    table = soup.find('table', class_='tablesorter user-contests-table')
+    tbody = table.find('tbody')
+
+    rows = tbody.find_all('tr')
+
+    delta_rating = []
+    rank_list = []
+
+    for item in rows:
+        elements = item.find_all('td')
+        rank = int(elements[3].find('a').text)
+        rating_change = int(elements[5].text)
+
+        delta_rating.append(rating_change)
+        rank_list.append(rank)
+
+    delta_rating.sort()
+    rank_list.sort()
+
+    stats = {
+        'Handle' : handle,
+        'No_of_Contests' : rows[0].find('td').text,
+        'Best_Rank' : rank_list[0],
+        'Worst_Rank' : rank_list[len(rank_list)-1],
+        'Max_Up' : delta_rating[len(delta_rating)-1],
+        'Max_Down' : delta_rating[0],
+    }
+
+    return stats
