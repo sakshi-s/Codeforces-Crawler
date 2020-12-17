@@ -24,6 +24,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('timetable', views.timetable, name='timetable'),
     path('iitg', views.iitg, name='iitg'),
+    path('cfhandler/cfsearch/<str:handle>', views.userprofile, name='userprofile'),
     path('search', views.search, name='search'),
     path('accounts/', include('accounts.urls')),
     path('cfhandler/', include('cfhandler.urls')),

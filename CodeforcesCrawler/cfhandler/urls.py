@@ -1,10 +1,9 @@
 from django.urls import path
-
 from . import views
 
 
 urlpatterns = [
     path("timetable", views.timetable, name="timetable"),
     path("iitg", views.iitg, name="iitg"),
-    path("cfsearch", views.cfsearch, name="cfsearch"),
+    path("cfsearch", views.cfsearch, name="cfsearch")
 ]
