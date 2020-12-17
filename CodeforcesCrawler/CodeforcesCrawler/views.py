@@ -13,12 +13,3 @@ def iitg(request, bakchodi):
 
 def search(request):
     return render(request, 'searchhandle.html')
-
-def userprofile(request, handle):
-    base_url = "https://www.codeforces.com/"
-    contests_url = base_url + 'profile/' + handle
-    page = requests.get(contests_url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    info_div = soup.find('div', class_='info')
-    main_info = info_div.find('div', class_='main-info')
-    return render(request, 'userprofile.html', {'userinfo' : main_info.text})
