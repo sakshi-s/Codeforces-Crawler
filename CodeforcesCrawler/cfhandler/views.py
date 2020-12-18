@@ -120,7 +120,7 @@ def fetch_contest_stats(handle):
 
     contests_url = start_url + 'contests/with/' + handle
     page = requests.get(contests_url)
-    soup = BeautifulSoup(page.content, 'html.parser')
+    soup = BeautifulSoup(page.content, 'lxml')
 
     table = soup.find('table', class_='tablesorter user-contests-table')
     tbody = table.find('tbody')
