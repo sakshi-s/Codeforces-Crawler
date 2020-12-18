@@ -106,9 +106,9 @@ def userprofile(request, handle):
 
 def contest(request,handle):
     fcs = fetch_contest_stats(handle)
-    # chart = {"output_languages" :  display_stats_languages(handle).render()
-    # }
-    # fcs.update(chart)
+    chart = {"output_languages" :  display_stats_languages(handle).render()
+    }
+    fcs.update(chart)
 
     return render(request, 'contest_stats.html', fcs)
 
@@ -148,4 +148,77 @@ def fetch_contest_stats(handle):
     }
 
     return stats
+
+def get_submission_stats(handle):
+    languages.objects.all().delete()
+    verdicts.objects.all().delete()
+    levels.objects.all().delete()
+
+    page = requests.get("https://codeforces.com/submissions/" + handle)
+
+    soup = BeautifulSoup(page.content, 'lxml')
+    div = soup.find_all('div', class_='pagination')
+
+    if len(div) == 1:
+        t=1
+
+    else:
+        ul = div[1].find('ul')
+        li = ul.find_all('li')
+
+        t = int(li[-2].text)
+
+
+    val = pd.Series()
+    verd = pd.Series()
+    lev = pd.Series()
+    i = 1
+
+    for i in range(t):
+        p = pd.read_html("https://codeforces.com/submissions/" + handle + "/page/" + str(i+1))
+        table = p[0]
+        #print(table)
+
+        val = val.combine(table['Lang'].value_counts(),(lambda x1, x2 : x1+x2), fill_value=0)
+        verd = verd.combine(table['Verdict'].value_counts(),(lambda x1, x2 : x1+x2), fill_value=0)
+        lev = lev.combine(table['Problem'].value_counts(),(lambda x1, x2 : x1+x2), fill_value=0)
+
+    labels_lang = val._index
+    labels_verd = verd._index
+    labels_lev = lev._index
+
+
+    for l in labels_lang:
+        a = languages.objects.update_or_create(name = l, val = val[l])[0]
+        a.save()
+
+    for l in labels_verd:
+        a = verdicts.objects.update_or_create(name = l, val = verd[l])[0]
+        a.save()
+
+    for l in labels_lev:
+        a = levels.objects.update_or_create(name = l, val = lev[l])[0]
+        a.save()
+
+
+def display_stats_languages(handle):
+    get_submission_stats(handle)
+
+    chartConfig = OrderedDict()
+    chartConfig["caption"] = "Languages of " + handle
+    chartConfig["xAxisName"] = "Languages"
+    chartConfig["xAxisName"] = "Submissions"
+    chartConfig["theme"] = "fusion"
+    chartConfig["animation"] = ""
+
+    datasource = OrderedDict()
+    datasource["Chart"] = chartConfig
+    datasource["data"] = []
+    # print(languages.objects.all())
+    for l in languages.objects.all():
+        datasource["data"].append({"label": l.name, "value": str(l.val)})
+
+    graph2D = fusioncharts.FusionCharts("pie2d", "Languages Chart", "600", "400", "languages_chart", "json", datasource)
+
+    return graph2D
 
