@@ -28,15 +28,16 @@
             <li><a class="navbar-brand" href="timetable">Time Table</a></li>
             <li><a class="navbar-brand" href="iitg">IITG</a></li>
             <li><a class="navbar-brand" href="search">Search</a></li>
+            <li><a class="navbar-link" href="allchat">Chat</a></li>
 
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
             {% if not user.is_authenticated %}
-              <li><a class="navbar-link" href="accounts/register">Register</a></li>
-              <li><a class="navbar-link" href="accounts/login">Login</a></li>
+              <li><a class="navbar-brand" href="accounts/register">Register</a></li>
+              <li><a class="navbar-brand" href="accounts/login">Login</a></li>
             {% else %}
-            <li><a class="navbar-link" href="accounts/logout">Logout</a></li>
+            <li><a class="navbar-brand" href="accounts/logout">Logout</a></li>
             {% endif %}
         </ul>
     </div>

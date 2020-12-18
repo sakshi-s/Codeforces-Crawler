@@ -28,8 +28,9 @@ urlpatterns = [
     path('cfhandler/cfsearch/<str:handle>', cfviews.userprofile, name='userprofile'),
     path('cfhandler/contest/<str:handle>', cfviews.contest, name='contest-statistics'),
     path('search', views.search, name='search'),
-    path('accounts/', include('accounts.urls')),
-    path('cfhandler/', include('cfhandler.urls')),
+    path('accounts', include('accounts.urls')),
+    path('cfhandler', include('cfhandler.urls')),
+    path('allchat', views.allchat, name='allchat')
 ]
 
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
