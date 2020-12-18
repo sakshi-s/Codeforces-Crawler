@@ -106,8 +106,10 @@ def userprofile(request, handle):
 
 def contest(request,handle):
     fcs = fetch_contest_stats(handle)
-    chart = {"output_languages" :  display_stats_languages(handle).render(),
-            "output_verdicts" :  display_stats_verdicts(handle).render()
+    chart = {
+        "output_languages" :  display_stats_languages(handle).render(),
+        "output_verdicts" :  display_stats_verdicts(handle).render(),
+        "output_levels" :  display_stats_levels(handle).render()
     }
     fcs.update(chart)
 
@@ -272,6 +274,58 @@ def display_stats_verdicts(handle):
     datasource["data"].append({"label": "Time Limit Exceeded", "value": TLE})
 
     graph2D = fusioncharts.FusionCharts("pie2d", "Verdicts Chart", "700", "500", "verdicts_chart", "json", datasource)
+
+    return graph2D
+
+def display_stats_levels(handle):
+
+    chartConfig = OrderedDict()
+    chartConfig["caption"] = "Levels of " + handle
+    chartConfig["xAxisName"] = "Levels"
+    chartConfig["xAxisName"] = "Submissions"
+    chartConfig["theme"] = "fusion"
+    chartConfig["animation"] = ""
+
+    datasource = OrderedDict()
+    datasource["Chart"] = chartConfig
+    datasource["data"] = []
+
+    A = 0
+    B = 0
+    C = 0
+    D = 0
+    E = 0
+    R = 0
+
+    for l in levels.objects.all():
+        item = l.name
+        if item[0] == "A":
+            A += l.val
+
+        elif item[0] == "B":
+            B += l.val
+
+        elif item[0] == "C":
+            C += l.val
+
+        elif item[0] == "D":
+            D += l.val
+
+        elif item[0] == "E":
+            E += l.val
+
+        else:
+            R += l.val
+
+    datasource["data"].append({"label": "A", "value": A})
+    datasource["data"].append({"label": "B", "value": B})
+    datasource["data"].append({"label": "C", "value": C})
+    datasource["data"].append({"label": "D", "value": D})
+    datasource["data"].append({"label": "E", "value": E})
+    datasource["data"].append({"label": "R", "value": R})
+
+
+    graph2D = fusioncharts.FusionCharts("column2d", "Levels Chart", "700", "500", "levels_chart", "json", datasource)
 
     return graph2D
 
