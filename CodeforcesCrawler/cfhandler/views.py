@@ -106,7 +106,8 @@ def userprofile(request, handle):
 
 def contest(request,handle):
     fcs = fetch_contest_stats(handle)
-    chart = {"output_languages" :  display_stats_languages(handle).render()
+    chart = {"output_languages" :  display_stats_languages(handle).render(),
+            "output_verdicts" :  display_stats_verdicts(handle).render()
     }
     fcs.update(chart)
 
@@ -221,4 +222,57 @@ def display_stats_languages(handle):
     graph2D = fusioncharts.FusionCharts("pie2d", "Languages Chart", "600", "400", "languages_chart", "json", datasource)
 
     return graph2D
+
+
+def display_stats_verdicts(handle):
+
+    chartConfig = OrderedDict()
+    chartConfig["caption"] = "Verdicts of " + handle
+    chartConfig["xAxisName"] = "Verdicts"
+    chartConfig["xAxisName"] = "Submissions"
+    chartConfig["theme"] = "fusion"
+    chartConfig["animation"] = ""
+
+    datasource = OrderedDict()
+    datasource["Chart"] = chartConfig
+    datasource["data"] = []
+
+    WA = 0
+    AC = 0
+    RTE = 0
+    MLE = 0
+    CE = 0
+    TLE = 0
+
+    for l in verdicts.objects.all():
+        item = l.name
+        if item[:5] == "Wrong":
+            WA += l.val
+
+        elif item[:5] == "Time":
+            TLE += l.val
+
+        elif item == "Accepted":
+            AC += l.val
+
+        elif item[:6] == "Memory":
+            MLE += l.val
+
+        elif item[:11] == "Compilation":
+            CE += l.val
+
+        elif item[:7] == "Runtime":
+            RTE += l.val
+
+    datasource["data"].append({"label": "Accepted", "value": AC})
+    datasource["data"].append({"label": "Wrong Answer", "value": WA})
+    datasource["data"].append({"label": "Runtime Error", "value": RTE})
+    datasource["data"].append({"label": "Memory Limit Exceeded", "value": MLE})
+    datasource["data"].append({"label": "Compilation Error", "value": CE})
+    datasource["data"].append({"label": "Time Limit Exceeded", "value": TLE})
+
+    graph2D = fusioncharts.FusionCharts("pie2d", "Verdicts Chart", "700", "500", "verdicts_chart", "json", datasource)
+
+    return graph2D
+
 
