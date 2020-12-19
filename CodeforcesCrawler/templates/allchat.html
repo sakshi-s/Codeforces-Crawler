@@ -1,3 +1,15 @@
-<h1>
-    Heyyy all your chats will be shown here! :)
-</h1>
+{% extends "header.html" %}
+
+{% block content %}
+
+
+{% for user_ in alluser %}
+
+{% if user.id is not user_.id %}
+    <a class="navbar-link" href="/chatroom/{{user.id}}/{{user_.id}}">{{user_}} -- {{user_.id}} </a><br>
+{% endif %}
+
+
+{% endfor %}
+
+{% endblock %}

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+app_name = 'cfhandler'
 
 urlpatterns = [
     path("timetable", views.timetable, name="timetable"),

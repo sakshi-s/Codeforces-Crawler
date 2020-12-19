@@ -329,4 +329,37 @@ def display_stats_levels(handle):
 
     return graph2D
 
+def allchat(request):
+    alluser = User.objects.all()
+    #print(alluser)
+    return render(request, 'allchat.html', {'alluser': alluser})
+
+def chatroom(request, userid1, userid2):
+    userid1 = int(userid1)
+    userid2 = int(userid2)
+
+    if userid1 > userid2:
+        userid1,userid2 = userid2,userid1
+    print(userid1,userid2)
+
+    user1_ = User.objects.get(pk=userid1)
+    user2_ = User.objects.get(pk=userid2)
+
+    print(user1_, user2_)
+
+    try:
+        chatroom = Chatroom.objects.get(user1=user1_, user2=user2_)
+    except Chatroom.DoesNotExist:
+        chatroom = Chatroom.objects.create(user1=user1_, user2=user2_)
+        chatroom.save()
+
+
+    messages = Chatmessage.objects.filter(chatroom=chatroom)
+    print(chatroom)
+    print(messages)
+    # return render(request, 'home.html', {})
+    return render(request, 'chat.html', {'chatroom':chatroom, 'messages':messages})
+    
+
+
 

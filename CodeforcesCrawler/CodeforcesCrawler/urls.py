@@ -20,6 +20,8 @@ from cfhandler import views as cfviews
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'CodeforcesCrawler'
+
 urlpatterns = [
     path('admin', admin.site.urls),
     path('', views.home, name='home'),
@@ -28,9 +30,10 @@ urlpatterns = [
     path('cfhandler/cfsearch/<str:handle>', cfviews.userprofile, name='userprofile'),
     path('cfhandler/contest/<str:handle>', cfviews.contest, name='contest-statistics'),
     path('search', views.search, name='search'),
-    path('accounts', include('accounts.urls')),
-    path('cfhandler', include('cfhandler.urls')),
-    path('allchat', views.allchat, name='allchat')
+    path('accounts/', include('accounts.urls')),
+    path('cfhandler/', include('cfhandler.urls')),
+    path('allchat', cfviews.allchat, name='allchat'),
+    path('chatroom/<str:userid1>/<str:userid2>', cfviews.chatroom, name='chatroom'),
 ]
 
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
