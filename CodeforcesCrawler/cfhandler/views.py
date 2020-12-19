@@ -1,29 +1,22 @@
-from django.shortcuts import render, redirect
 import requests
-from bs4 import BeautifulSoup
-from datetime import datetime, date
-from django.contrib.auth.decorators import login_required
-import re
-from urllib.request import urlopen
-from django.views.generic import TemplateView
-from . import fusioncharts
 import pandas as pd
-from matplotlib import pyplot as plt
 from .models import *
+from . import fusioncharts
+from bs4 import BeautifulSoup
 from collections import OrderedDict
+from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-# Create your views here.
+
 def timetable(request):
     url = "https://codeforces.com/contests"
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
-
     tables = soup.find_all('table', class_="")
     contest_list = []
-
     rows = tables[0].find_all('tr')
+
     for row in rows:
         elements = row.find_all('td')
         elements = [element.text.strip() for element in elements]
@@ -33,32 +26,31 @@ def timetable(request):
                 elements[1] = "Not Mentioned"
             contest_list.append(elements)
 
-
-    return render(request, 'cftimetable.html', {'contest_list': contest_list})
+    return render(request, 'cftimetable.html', {'contest_list' : contest_list})
 
 def iitg(request):
     url = "https://codeforces.com/ratings/organization/297"
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
-    num_pages_div = soup.find_all('div', class_='pagination')
+    num_pages_div = soup.find_all('div', class_ = 'pagination')
 
     if len(num_pages_div) == 1:
         num_pages = 1
+
     else:
         ul = num_pages_div[1].find('ul')
         li = ul.find_all('li')
         num_pages = int(li[-2].text)
 
     coders = []
-    i = 1
     for i in range(num_pages + 1):
         url = "https://codeforces.com/ratings/organization/297/page/" + str(i+1)
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
-        div = soup.find_all('div',class_='datatable ratingsDatatable')
+        div = soup.find_all('div', class_ = 'datatable ratingsDatatable')
         tables = div[0].find_all('table')
-
         rows = tables[0].find_all('tr')
+
         for row in rows:
             elements = row.find_all('td')
 
@@ -67,11 +59,13 @@ def iitg(request):
             coder_info = []
             column_text = elements[0].text.strip()
             rating = 0
+
             for char in column_text:
-                if char =='(':
+                if char == '(':
                     break
-                if char>='0' and char<='9':
+                if char >= '0' and char <= '9':
                     rating = rating*10 + int(char)
+
             if rating == 0:
                 continue
             coder_info.append(rating)
@@ -80,14 +74,15 @@ def iitg(request):
             coder_info.append(elements[2].text.strip())
             coder_info.append(elements[3].text.strip())
             coders.append(coder_info)
+
     return render(request, 'cfiitg.html', {'coders':coders})
 
 def cfsearch(request):
-    if( request.method == 'POST') :
+    if request.method == 'POST':
         handle = request.POST['handle']
         reqtype = request.POST['reqtype']
         
-        if(reqtype == "User Info"):
+        if reqtype == "User Info":
             return redirect('cfsearch/' + handle)
         else:
             return redirect('contest/' + handle)
@@ -100,41 +95,38 @@ def userprofile(request, handle):
     contests_url = base_url + 'profile/' + handle
     page = requests.get(contests_url)
     soup = BeautifulSoup(page.content, 'html.parser')
-    info_div = soup.find('div', class_='info')
-    main_info = info_div.find('div', class_='main-info')
+    info_div = soup.find('div', class_ = 'info')
+    main_info = info_div.find('div', class_ = 'main-info')
+
     return render(request, 'userprofile.html', {'userinfo' : main_info.text})
 
 def contest(request,handle):
-    fcs = fetch_contest_stats(handle)
-    chart = {
-        "output_languages" :  display_stats_languages(handle).render(),
-        "output_verdicts" :  display_stats_verdicts(handle).render(),
-        "output_levels" :  display_stats_levels(handle).render()
+    contest_stats = fetch_contest_stats(handle)
+    charts = {
+        "output_languages" :  display_languages_stats(handle).render(),
+        "output_verdicts" :  display_verdicts_stats(handle).render(),
+        "output_levels" :  display_levels_stats(handle).render()
     }
-    fcs.update(chart)
+    contest_stats.update(charts)
 
-    return render(request, 'contest_stats.html', fcs)
+    return render(request, 'contest_stats.html', contest_stats)
 
 def fetch_contest_stats(handle):
     start_url = "https://www.codeforces.com/"
-
     contests_url = start_url + 'contests/with/' + handle
     page = requests.get(contests_url)
     soup = BeautifulSoup(page.content, 'lxml')
-
     table = soup.find('table', class_='tablesorter user-contests-table')
     tbody = table.find('tbody')
-
     rows = tbody.find_all('tr')
 
     delta_rating = []
     rank_list = []
 
-    for item in rows:
-        elements = item.find_all('td')
+    for row in rows:
+        elements = row.find_all('td')
         rank = int(elements[3].find('a').text)
         rating_change = int(elements[5].text)
-
         delta_rating.append(rating_change)
         rank_list.append(rank)
 
@@ -157,54 +149,50 @@ def get_submission_stats(handle):
     verdicts.objects.all().delete()
     levels.objects.all().delete()
 
-    page = requests.get("https://codeforces.com/submissions/" + handle)
-
+    url = "https://codeforces.com/submissions/" + handle
+    page = requests.get(url)
     soup = BeautifulSoup(page.content, 'lxml')
-    div = soup.find_all('div', class_='pagination')
+    num_pages_div = soup.find_all('div', class_ = 'pagination')
 
-    if len(div) == 1:
-        t=1
+    if len(num_pages_div) == 1:
+        num_pages = 1
 
     else:
-        ul = div[1].find('ul')
+        ul = num_pages_div[1].find('ul')
         li = ul.find_all('li')
+        num_pages = int(li[-2].text)
 
-        t = int(li[-2].text)
+    language_series = pd.Series()
+    verdict_series = pd.Series()
+    level_series = pd.Series()
 
+    for i in range(num_pages + 1):
+        page = pd.read_html("https://codeforces.com/submissions/" + handle + "/page/" + str(i+1))
+        table = page[0]
 
-    val = pd.Series()
-    verd = pd.Series()
-    lev = pd.Series()
-    i = 1
+        language_series = language_series.combine(table['Lang'].value_counts(), (lambda x1, x2 : x1+x2), fill_value = 0)
+        verdict_series = verdict_series.combine(table['Verdict'].value_counts(), (lambda x1, x2 : x1+x2), fill_value = 0)
+        level_series = level_series.combine(table['Problem'].value_counts(), (lambda x1, x2 : x1+x2), fill_value = 0) 
 
-    for i in range(t):
-        p = pd.read_html("https://codeforces.com/submissions/" + handle + "/page/" + str(i+1))
-        table = p[0]
-        #print(table)
+    language_labels = language_series._index
+    verdict_labels = verdict_series._index
+    level_labels = level_series._index
 
-        val = val.combine(table['Lang'].value_counts(),(lambda x1, x2 : x1+x2), fill_value=0)
-        verd = verd.combine(table['Verdict'].value_counts(),(lambda x1, x2 : x1+x2), fill_value=0)
-        lev = lev.combine(table['Problem'].value_counts(),(lambda x1, x2 : x1+x2), fill_value=0)
+    for label in language_labels:
+        language = languages.objects.update_or_create(name = label, val = language_series[label])[0]
+        language.save()
 
-    labels_lang = val._index
-    labels_verd = verd._index
-    labels_lev = lev._index
+    for label in verdict_labels:
+        verdict = verdicts.objects.update_or_create(name = label, val = verdict_series[label])[0]
+        verdict.save()
 
-
-    for l in labels_lang:
-        a = languages.objects.update_or_create(name = l, val = val[l])[0]
-        a.save()
-
-    for l in labels_verd:
-        a = verdicts.objects.update_or_create(name = l, val = verd[l])[0]
-        a.save()
-
-    for l in labels_lev:
-        a = levels.objects.update_or_create(name = l, val = lev[l])[0]
-        a.save()
+    for label in level_labels:
+        level = levels.objects.update_or_create(name = label, val = level_series[label])[0]
+        level.save()
 
 
-def display_stats_languages(handle):
+def display_languages_stats(handle):
+    # Saves stats data in database
     get_submission_stats(handle)
 
     chartConfig = OrderedDict()
@@ -217,17 +205,16 @@ def display_stats_languages(handle):
     datasource = OrderedDict()
     datasource["Chart"] = chartConfig
     datasource["data"] = []
-    # print(languages.objects.all())
+    
     for l in languages.objects.all():
-        datasource["data"].append({"label": l.name, "value": str(l.val)})
+        datasource["data"].append({"label" : l.name, "value" : str(l.val)})
 
     graph2D = fusioncharts.FusionCharts("pie2d", "Languages Chart", "600", "400", "languages_chart", "json", datasource)
 
     return graph2D
 
 
-def display_stats_verdicts(handle):
-
+def display_verdicts_stats(handle):
     chartConfig = OrderedDict()
     chartConfig["caption"] = "Verdicts of " + handle
     chartConfig["xAxisName"] = "Verdicts"
@@ -246,38 +233,38 @@ def display_stats_verdicts(handle):
     CE = 0
     TLE = 0
 
-    for l in verdicts.objects.all():
-        item = l.name
-        if item[:5] == "Wrong":
-            WA += l.val
+    for verdict_object in verdicts.objects.all():
+        verdict = verdict_object.name
+        if verdict[:5] == "Wrong":
+            WA += verdict_object.val
 
-        elif item[:5] == "Time":
-            TLE += l.val
+        elif verdict[:5] == "Time":
+            TLE += verdict_object.val
 
-        elif item == "Accepted":
-            AC += l.val
+        elif verdict == "Accepted":
+            AC += verdict_object.val
 
-        elif item[:6] == "Memory":
-            MLE += l.val
+        elif verdict[:6] == "Memory":
+            MLE += verdict_object.val
 
-        elif item[:11] == "Compilation":
-            CE += l.val
+        elif verdict[:11] == "Compilation":
+            CE += verdict_object.val
 
-        elif item[:7] == "Runtime":
-            RTE += l.val
+        elif verdict[:7] == "Runtime":
+            RTE += verdict_object.val
 
-    datasource["data"].append({"label": "Accepted", "value": AC})
-    datasource["data"].append({"label": "Wrong Answer", "value": WA})
-    datasource["data"].append({"label": "Runtime Error", "value": RTE})
-    datasource["data"].append({"label": "Memory Limit Exceeded", "value": MLE})
-    datasource["data"].append({"label": "Compilation Error", "value": CE})
-    datasource["data"].append({"label": "Time Limit Exceeded", "value": TLE})
+    datasource["data"].append({"label" : "Accepted", "value" : AC})
+    datasource["data"].append({"label" : "Wrong Answer", "value" : WA})
+    datasource["data"].append({"label" : "Runtime Error", "value" : RTE})
+    datasource["data"].append({"label" : "Memory Limit Exceeded", "value" : MLE})
+    datasource["data"].append({"label" : "Compilation Error", "value" : CE})
+    datasource["data"].append({"label" : "Time Limit Exceeded", "value" : TLE})
 
     graph2D = fusioncharts.FusionCharts("pie2d", "Verdicts Chart", "700", "500", "verdicts_chart", "json", datasource)
 
     return graph2D
 
-def display_stats_levels(handle):
+def display_levels_stats(handle):
 
     chartConfig = OrderedDict()
     chartConfig["caption"] = "Levels of " + handle
@@ -297,25 +284,25 @@ def display_stats_levels(handle):
     E = 0
     R = 0
 
-    for l in levels.objects.all():
-        item = l.name
-        if item[0] == "A":
-            A += l.val
+    for level_object in levels.objects.all():
+        level = level_object.name
+        if level[0] == "A":
+            A += level_object.val
 
-        elif item[0] == "B":
-            B += l.val
+        elif level[0] == "B":
+            B += level_object.val
 
-        elif item[0] == "C":
-            C += l.val
+        elif level[0] == "C":
+            C += level_object.val
 
-        elif item[0] == "D":
-            D += l.val
+        elif level[0] == "D":
+            D += level_object.val
 
-        elif item[0] == "E":
-            E += l.val
+        elif level[0] == "E":
+            E += level_object.val
 
         else:
-            R += l.val
+            R += level_object.val
 
     datasource["data"].append({"label": "A", "value": A})
     datasource["data"].append({"label": "B", "value": B})
@@ -324,14 +311,13 @@ def display_stats_levels(handle):
     datasource["data"].append({"label": "E", "value": E})
     datasource["data"].append({"label": "R", "value": R})
 
-
     graph2D = fusioncharts.FusionCharts("column2d", "Levels Chart", "700", "500", "levels_chart", "json", datasource)
 
     return graph2D
 
 def allchat(request):
     alluser = User.objects.all()
-    return render(request, 'allchat.html', {'alluser': alluser})
+    return render(request, 'allchat.html', {'alluser' : alluser})
 
 def chatroom(request, userid1, userid2):
     userid1 = int(userid1)
@@ -340,27 +326,25 @@ def chatroom(request, userid1, userid2):
 
     if userid1 > userid2:
         userid1,userid2 = userid2,userid1
-    print(userid1,userid2)
 
-    user1_ = User.objects.get(pk=userid1)
-    user2_ = User.objects.get(pk=userid2)
-
-    print(user1_, user2_)
+    user1_ = User.objects.get(pk = userid1)
+    user2_ = User.objects.get(pk = userid2)
 
     try:
         chatroom = Chatroom.objects.get(user1=user1_, user2=user2_)
+
     except Chatroom.DoesNotExist:
         chatroom = Chatroom.objects.create(user1=user1_, user2=user2_)
         chatroom.save()
 
-    if( request.method == 'POST') :
-        answer = request.POST['answer']
-        chatmessage = Chatmessage.objects.create(message=answer, chatroom_id=chatroom.id, user_id=sender)
+    if request.method == 'POST':
+        message = request.POST['message']
+        chatmessage = Chatmessage.objects.create(message = message, chatroom_id = chatroom.id, user_id = sender)
         chatmessage.save()
         return redirect('/')
 
-    messages = Chatmessage.objects.filter(chatroom=chatroom)
-    return render(request, 'chat.html', {'chatroom':chatroom, 'messages':messages})
+    messages = Chatmessage.objects.filter(chatroom = chatroom)
+    return render(request, 'chat.html', {'chatroom' : chatroom, 'messages' : messages})
     
 
 

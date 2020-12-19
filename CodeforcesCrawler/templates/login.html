@@ -8,6 +8,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src='main.js'></script>
 </head>
+
 <body>
     <form action="login" method="post">
         {% csrf_token %}
@@ -16,11 +17,10 @@
         <input type="Submit">
     </form>
 
-
     <div>
-            {% for message in messages %}
-            <h3> {{message}}  </h3>
-            {% endfor %}
+        {% for message in messages %}
+            <h3> {{message}} </h3>
+        {% endfor %}
     </div>
 </body>
 </html>

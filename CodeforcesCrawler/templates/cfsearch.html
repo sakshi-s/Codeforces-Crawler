@@ -5,23 +5,26 @@ Search Handle
 {% endblock %}
 
 {% block content %}
-<h3>Enter CodeForces Handle{{error}}</h3>
-<div class="jumbotron " style="background-color: rgb(233, 224, 211);">
+
+<h3> Enter CodeForces Handle </h3>
+<div class="jumbotron" style="background-color : rgb(233, 224, 211)">
     <form method="POST" class="form-group" action="cfsearch">
         {% csrf_token %}
         <div class="form-group">
             <div class="form-group">
-                <label>What information are you looking for?:</label>
+              <label> What information are you looking for?: </label>
                 <select class="form-control" name="reqtype">
-                  <option>User Info</option>
-                  <option>Contests Stats</option>
+                  <option> User Info </option>
+                  <option> Contests Stats </option>
                 </select>
-              </div>
-                <label>Enter User Handle</label><br>
+            </div>
+            <div>
+              <label> Enter User Handle </label><br>
                 <input type="text" name="handle" placeholder="User or contest handle">
-              </div>
-          </div>
-        <button type="submit" class="btn btn-success">Search</button>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success"> Search </button>
     </form>
 </div>
+
 {% endblock %}

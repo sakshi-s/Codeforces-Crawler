@@ -1,10 +1,11 @@
-from django.http import HttpResponse
 import json
-from collections import OrderedDict
-from io import StringIO
 from enum import Enum
+from io import StringIO
+from collections import OrderedDict
+from django.http import HttpResponse
 
-# Common base class for FC
+
+# Common base class for FusionCharts
 class FusionCharts:
 
     baseTemplate = """
@@ -20,7 +21,7 @@ class FusionCharts:
     eventTemplate = """FusionCharts("__chartId__").addEventListener("_fceventname_",_fceventbody_);"""
     timeSeriesObject = None
 
-    # constructor
+    # Constructor
     def __init__(self, type, id, width, height, renderAt, dataFormat, dataSource): 
         self.eventOptions = OrderedDict()
         self.constructorOptions = {}  
@@ -43,7 +44,7 @@ class FusionCharts:
     def addMessage(self, messageName, messageValue):
         self.constructorOptions[messageName] = messageValue
 
-    # render the chart created
+    # Render the chart created
     # It prints a script and calls the FusionCharts javascript render method of created chart   
     def render(self):
         

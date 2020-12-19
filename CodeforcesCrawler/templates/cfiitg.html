@@ -1,38 +1,43 @@
 {% extends "header.html" %}
+
 {% block title %}
 Handle Info
 {% endblock %}
+
 {% block content %}
 
 <table>
-<tbody>
-<tr>
-    <th style="width:2em;" class="top left">Rank in IITG</th>
-    <th style="text-align:left;" class="top">ID</th>
-    <th style="text-align:left;" class="top">Color</th>
-    <th style="width:2em;" class="top"><span title="Number of participations">Number of participations</span></th>
-    <th style="width:2em;" class="top right">Contest Rating</th>
-</tr>
-{% for coder in coders %}
-<tr>
-    <td class="dark left">
-            {{coder.0}}
-    </td>
-    <td style="text-align:left;padding-left:1em;" class="dark">
-        {{coder.1}} </td>
-    <td class="dark">
-        {{coder.2}}
-    </td>
-    <td class="dark">
-        {{coder.3}}
-    </td>
-    <td class="dark right">
-        {{coder.4}}
-    </td>
-</tr>
+    <tbody>
+        <tr>
+            <th style="width : 2em" class="top left"> Rank in IITG </th>
+            <th style="text-align : left" class="top"> ID </th>
+            <th style="text-align : left" class="top"> Color </th>
+            <th style="width : 2em" class="top"><span title="Number of participations"> Number of participations </span></th>
+            <th style="width : 2em" class="top right"> Contest Rating </th>
+        </tr>
 
-{% endfor %}
-</tbody>
+        {% for coder in coders %}
+
+        <tr>
+            <td class="dark left">
+                {{coder.0}}
+            </td>
+            <td style="text-align : left; padding-left : 1em" class="dark">
+                {{coder.1}} 
+            </td>
+            <td class="dark">
+                {{coder.2}}
+            </td>
+            <td class="dark">
+                {{coder.3}}
+            </td>
+            <td class="dark right">
+                {{coder.4}}
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
