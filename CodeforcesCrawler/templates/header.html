@@ -28,7 +28,7 @@
             <li><a class="navbar-brand" href="timetable">Time Table</a></li>
             <li><a class="navbar-brand" href="iitg">IITG</a></li>
             <li><a class="navbar-brand" href="search">Search</a></li>
-            <li><a class="navbar-link" href="allchat">Chat</a></li>
+            <li><a class="navbar-brand" href="allchat">Chat</a></li>
 
         </ul>
 
@@ -37,6 +37,7 @@
               <li><a class="navbar-brand" href="accounts/register">Register</a></li>
               <li><a class="navbar-brand" href="accounts/login">Login</a></li>
             {% else %}
+            <li><a class="navbar-brand" href="/">Logged in as {{user}}</a></li>
             <li><a class="navbar-brand" href="accounts/logout">Logout</a></li>
             {% endif %}
         </ul>

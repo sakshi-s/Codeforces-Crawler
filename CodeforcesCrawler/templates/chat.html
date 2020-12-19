@@ -1,3 +1,22 @@
-<h1>
-    Your chat history will be displayed here!
-</h1>
+{% extends "header.html" %}
+
+{% block content %}
+
+<ul id='chat-items'>
+    <input type="hidden" id="myusername" value="{{user.username}}">
+{% for message in messages %}
+
+<li>{{ message.message }} from {{message.user.username}}</li>
+
+{% endfor %}
+</ul>
+
+
+<form method="post" action="#" id="form">
+    {% csrf_token %}
+  <textarea name="answer" rows="1" cols="10" style=" background-color: #CCE5FF " id="id_message"></textarea>
+  <br>
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ans</button>
+</form>
+
+{% endblock %}

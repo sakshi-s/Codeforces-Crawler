@@ -331,12 +331,12 @@ def display_stats_levels(handle):
 
 def allchat(request):
     alluser = User.objects.all()
-    #print(alluser)
     return render(request, 'allchat.html', {'alluser': alluser})
 
 def chatroom(request, userid1, userid2):
     userid1 = int(userid1)
     userid2 = int(userid2)
+    sender = userid1
 
     if userid1 > userid2:
         userid1,userid2 = userid2,userid1
@@ -353,11 +353,13 @@ def chatroom(request, userid1, userid2):
         chatroom = Chatroom.objects.create(user1=user1_, user2=user2_)
         chatroom.save()
 
+    if( request.method == 'POST') :
+        answer = request.POST['answer']
+        chatmessage = Chatmessage.objects.create(message=answer, chatroom_id=chatroom.id, user_id=sender)
+        chatmessage.save()
+        return redirect('/')
 
     messages = Chatmessage.objects.filter(chatroom=chatroom)
-    print(chatroom)
-    print(messages)
-    # return render(request, 'home.html', {})
     return render(request, 'chat.html', {'chatroom':chatroom, 'messages':messages})
     
 
