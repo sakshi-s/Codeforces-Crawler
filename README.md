@@ -1,2 +1,2 @@
 # Codeforces-Crawler
-Used Beautiful Soup and Selenium to scrap Contests schedule and display it in a Django based website along with a discussion portal. It can extract the code of any user given a particular question and contest identifier. Used SQLite as the backend database to store users' information.
+It scrapes Codeforces contests schedule using Beautiful Soup and displays it in a Django based website. It can extract profile and contests stats info of a given user and show them pictorially. Implements authentication features like register, login and logout and the users can chat with each other. It also shows IITG leaderboard on Codeforces.
