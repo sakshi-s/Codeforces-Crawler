@@ -83,7 +83,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'CodeforcesCrawler',
         'USER' : 'postgres',
-        'PASSWORD' : '1407',
+	#Update your password here
+        'PASSWORD' : '',
         'HOST' : 'localhost'
     }
 }
