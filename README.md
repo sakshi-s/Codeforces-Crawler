@@ -14,27 +14,36 @@ It is a Django based website that scrapes information from Codeforces website us
 * Database : PostgreSQL
 
 ## How to run locally? ##
-* Clone the repo:
+* Clone the repo.
     * git clone https://github.com/sakshi-s/Codeforces-Crawler.git
-* Create virtual environment:
+* Create virtual environment.
     * python -m venv env
     * env\Scripts\activate
-This will create env folder.
-* Change Directory:
+    * This will create env folder.
+* Change directory.
     * cd Codeforces-Crawler
-* Install dependencies using : 
+* Install dependencies.
     * pip install -r requirements.txt
-* Change Directory:
+* Change Directory.
     * cd CodeforcesCrawler
-* Update the password for your 'postgres' superuser in settings.py. Then make migrations using
+* Update the password for your 'postgres' superuser in settings.py. Then make migrations.
     * python manage.py makemigrations
-* Migrate Database
+* Migrate database.
     * python manage.py migrate
-* Create a superuser
+* Create a superuser.
     * python manage.py createsuperuser
-* Run server using
+* Run server.
     * python manage.py runserver
     * Server starts at 'http://127.0.0.1:8000/'
+    
+## Snapshots ##
+![](CodeforcesCrawler/static/snapshots/iitgleaderboard.PNG)
+![](CodeforcesCrawler/static/snapshots/contestlistpage.PNG)
+![](CodeforcesCrawler/static/snapshots/searchpage.PNG)
+![](CodeforcesCrawler/static/snapshots/languages.PNG)
+![](CodeforcesCrawler/static/snapshots/verdicts.PNG)
+![](CodeforcesCrawler/static/snapshots/levelsandinfo.PNG)
+![](CodeforcesCrawler/static/snapshots/chatpage.PNG)
 
 ## Future plans ##
 * Get information for other coding platforms like CodeChef, Leetcode etc.
