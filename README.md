@@ -7,6 +7,8 @@ It is a Django based website that scrapes information from Codeforces website us
 * Get information about stats of the submissions made by a user like languages used, verdicts and the level of problem attempted. It also shows them pictorially, pie charts for languages and verdicts and bar graph for levels of problem.
 * Chat among users with all the message history getting saved in the database.
 
+## Check it out! ##
+Check it out [here](https://codeforces-crawler.herokuapp.com/) !
 
 ## Tech Stack ##
 * Frontend: HTML/CSS
@@ -20,8 +22,6 @@ It is a Django based website that scrapes information from Codeforces website us
     * python -m venv env
     * env\Scripts\activate
     * This will create env folder.
-* Change directory.
-    * cd Codeforces-Crawler
 * Install dependencies.
     * pip install -r requirements.txt
 * Change Directory.
@@ -37,13 +37,13 @@ It is a Django based website that scrapes information from Codeforces website us
     * Server starts at 'http://127.0.0.1:8000/'
     
 ## Snapshots ##
-![](CodeforcesCrawler/static/snapshots/iitgleaderboard.PNG)
-![](CodeforcesCrawler/static/snapshots/contestlistpage.PNG)
-![](CodeforcesCrawler/static/snapshots/searchpage.PNG)
-![](CodeforcesCrawler/static/snapshots/languages.PNG)
-![](CodeforcesCrawler/static/snapshots/verdicts.PNG)
-![](CodeforcesCrawler/static/snapshots/levelsandinfo.PNG)
-![](CodeforcesCrawler/static/snapshots/chatpage.PNG)
+![](static/snapshots/iitgleaderboard.PNG)
+![](static/snapshots/contestlistpage.PNG)
+![](static/snapshots/searchpage.PNG)
+![](static/snapshots/languages.PNG)
+![](static/snapshots/verdicts.PNG)
+![](static/snapshots/levelsandinfo.PNG)
+![](static/snapshots/chatpage.PNG)
 
 ## Future plans ##
 * Get information for other coding platforms like CodeChef, Leetcode etc.
