@@ -145,9 +145,9 @@ def fetch_contest_stats(handle):
     return stats
 
 def get_submission_stats(handle):
-    languages.objects.all().delete()
-    verdicts.objects.all().delete()
-    levels.objects.all().delete()
+    Languages.objects.all().delete()
+    Verdicts.objects.all().delete()
+    Levels.objects.all().delete()
 
     url = "https://codeforces.com/submissions/" + handle
     page = requests.get(url)
@@ -179,15 +179,15 @@ def get_submission_stats(handle):
     level_labels = level_series._index
 
     for label in language_labels:
-        language = languages.objects.update_or_create(name = label, val = language_series[label])[0]
+        language = Languages.objects.update_or_create(name = label, val = language_series[label])[0]
         language.save()
 
     for label in verdict_labels:
-        verdict = verdicts.objects.update_or_create(name = label, val = verdict_series[label])[0]
+        verdict = Verdicts.objects.update_or_create(name = label, val = verdict_series[label])[0]
         verdict.save()
 
     for label in level_labels:
-        level = levels.objects.update_or_create(name = label, val = level_series[label])[0]
+        level = Levels.objects.update_or_create(name = label, val = level_series[label])[0]
         level.save()
 
 
@@ -206,7 +206,7 @@ def display_languages_stats(handle):
     datasource["Chart"] = chartConfig
     datasource["data"] = []
     
-    for l in languages.objects.all():
+    for l in Languages.objects.all():
         datasource["data"].append({"label" : l.name, "value" : str(l.val)})
 
     graph2D = fusioncharts.FusionCharts("pie2d", "Languages Chart", "600", "400", "languages_chart", "json", datasource)
@@ -233,7 +233,7 @@ def display_verdicts_stats(handle):
     CE = 0
     TLE = 0
 
-    for verdict_object in verdicts.objects.all():
+    for verdict_object in Verdicts.objects.all():
         verdict = verdict_object.name
         if verdict[:5] == "Wrong":
             WA += verdict_object.val
@@ -284,7 +284,7 @@ def display_levels_stats(handle):
     E = 0
     R = 0
 
-    for level_object in levels.objects.all():
+    for level_object in Levels.objects.all():
         level = level_object.name
         if level[0] == "A":
             A += level_object.val

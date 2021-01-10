@@ -3,21 +3,21 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class languages(models.Model):
+class Languages(models.Model):
     name = models.CharField(max_length = 200)
     val = models.IntegerField()
 
     def __str__(self):
         return self.name
 
-class verdicts(models.Model):
+class Verdicts(models.Model):
     name = models.CharField(max_length = 200)
     val = models.IntegerField()
 
     def __str__(self):
         return self.name
 
-class levels(models.Model):
+class Levels(models.Model):
     name = models.CharField(max_length = 200)
     val = models.IntegerField()
 
