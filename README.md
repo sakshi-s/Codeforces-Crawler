@@ -22,10 +22,10 @@ Check it out [here](https://codeforces-crawler.herokuapp.com/) !
     * python -m venv env
     * env\Scripts\activate
     * This will create env folder.
+* Change Directory.
+    * cd Codeforces-Crawler
 * Install dependencies.
     * pip install -r requirements.txt
-* Change Directory.
-    * cd CodeforcesCrawler
 * Update the password for your 'postgres' superuser in settings.py. Then make migrations.
     * python manage.py makemigrations
 * Migrate database.

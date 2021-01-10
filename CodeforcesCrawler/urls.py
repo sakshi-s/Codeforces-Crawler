@@ -15,12 +15,12 @@ Including another URLconf
 """
 from . import views
 from django.contrib import admin
-from django.conf import settings
 from django.urls import path, include
 from cfhandler import views as cfviews
 from django.conf.urls.static import static
+from django.conf.urls import url
 
-app_name = 'CodeforcesCrawler'
+app_name = 'main'
 
 urlpatterns = [
     path('admin', admin.site.urls),
@@ -36,4 +36,4 @@ urlpatterns = [
     path('chatroom/<str:userid1>/<str:userid2>', cfviews.chatroom, name='chatroom'),
 ]
 
-urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+#urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

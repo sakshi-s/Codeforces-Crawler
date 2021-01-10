@@ -35,7 +35,6 @@ ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'cfhandler.apps.CfhandlerConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'accounts',
+    'cfhandler',
     'CodeforcesCrawler',
 ]
 
@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': 'CodeforcesCrawler',
         'USER' : 'postgres',
 	#Update your password here
-        'PASSWORD' : '',
+        'PASSWORD' : '1407',
         'HOST' : 'localhost'
     }
 }
