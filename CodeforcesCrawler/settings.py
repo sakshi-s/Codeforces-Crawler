@@ -27,7 +27,7 @@ SECRET_KEY = '6!q4x_0)(e%7jhm67wjghpn^x_c)jo-ajt=ckj!h1itwv1&n3%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.sites',
     'accounts',
     'cfhandler',
     'CodeforcesCrawler',
