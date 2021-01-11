@@ -30,6 +30,8 @@ class Chatroom(models.Model):
     updated = models.DateTimeField(auto_now = True)
     timestamp = models.DateTimeField(auto_now_add = True)
 
+    def __str__(self):
+        return str(self.user1) + str(self.user2)
 
     class Meta:
         unique_together = (("user1", "user2"),)

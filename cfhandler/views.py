@@ -3,7 +3,6 @@ import pandas as pd
 from .models import *
 from . import fusioncharts
 from bs4 import BeautifulSoup
-from collections import OrderedDict
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -12,7 +11,7 @@ User = get_user_model()
 def timetable(request):
     url = "https://codeforces.com/contests"
     page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
+    soup = BeautifulSoup(page.content, 'lxml')
     tables = soup.find_all('table', class_="")
     contest_list = []
     rows = tables[0].find_all('tr')
@@ -31,7 +30,7 @@ def timetable(request):
 def iitg(request):
     url = "https://codeforces.com/ratings/organization/297"
     page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
+    soup = BeautifulSoup(page.content, 'lxml')
     num_pages_div = soup.find_all('div', class_ = 'pagination')
 
     if len(num_pages_div) == 1:
@@ -46,7 +45,7 @@ def iitg(request):
     for i in range(num_pages + 1):
         url = "https://codeforces.com/ratings/organization/297/page/" + str(i+1)
         page = requests.get(url)
-        soup = BeautifulSoup(page.content, 'html.parser')
+        soup = BeautifulSoup(page.content, 'lxml')
         div = soup.find_all('div', class_ = 'datatable ratingsDatatable')
         tables = div[0].find_all('table')
         rows = tables[0].find_all('tr')
@@ -94,7 +93,7 @@ def userprofile(request, handle):
     base_url = "https://www.codeforces.com/"
     contests_url = base_url + 'profile/' + handle
     page = requests.get(contests_url)
-    soup = BeautifulSoup(page.content, 'html.parser')
+    soup = BeautifulSoup(page.content, 'lxml')
     info_div = soup.find('div', class_ = 'info')
     main_info = info_div.find('div', class_ = 'main-info')
 
@@ -174,9 +173,9 @@ def get_submission_stats(handle):
         verdict_series = verdict_series.combine(table['Verdict'].value_counts(), (lambda x1, x2 : x1+x2), fill_value = 0)
         level_series = level_series.combine(table['Problem'].value_counts(), (lambda x1, x2 : x1+x2), fill_value = 0) 
 
-    language_labels = language_series._index
-    verdict_labels = verdict_series._index
-    level_labels = level_series._index
+    language_labels = language_series.keys()
+    verdict_labels = verdict_series.keys()
+    level_labels = level_series.keys()
 
     for label in language_labels:
         language = Languages.objects.update_or_create(name = label, val = language_series[label])[0]
@@ -195,34 +194,32 @@ def display_languages_stats(handle):
     # Saves stats data in database
     get_submission_stats(handle)
 
-    chartConfig = OrderedDict()
+    chartConfig = dict()
     chartConfig["caption"] = "Languages of " + handle
     chartConfig["xAxisName"] = "Languages"
     chartConfig["xAxisName"] = "Submissions"
     chartConfig["theme"] = "fusion"
-    chartConfig["animation"] = ""
 
-    datasource = OrderedDict()
+    datasource = dict()
     datasource["Chart"] = chartConfig
     datasource["data"] = []
     
     for l in Languages.objects.all():
         datasource["data"].append({"label" : l.name, "value" : str(l.val)})
 
-    graph2D = fusioncharts.FusionCharts("pie2d", "Languages Chart", "600", "400", "languages_chart", "json", datasource)
+    graph2D = fusioncharts.FusionCharts("pie2d", "Languages Chart", "700", "500", "languages_chart", "json", datasource)
 
     return graph2D
 
 
 def display_verdicts_stats(handle):
-    chartConfig = OrderedDict()
+    chartConfig = dict()
     chartConfig["caption"] = "Verdicts of " + handle
     chartConfig["xAxisName"] = "Verdicts"
     chartConfig["xAxisName"] = "Submissions"
     chartConfig["theme"] = "fusion"
-    chartConfig["animation"] = ""
 
-    datasource = OrderedDict()
+    datasource = dict()
     datasource["Chart"] = chartConfig
     datasource["data"] = []
 
@@ -266,14 +263,13 @@ def display_verdicts_stats(handle):
 
 def display_levels_stats(handle):
 
-    chartConfig = OrderedDict()
+    chartConfig = dict()
     chartConfig["caption"] = "Levels of " + handle
     chartConfig["xAxisName"] = "Levels"
     chartConfig["xAxisName"] = "Submissions"
     chartConfig["theme"] = "fusion"
-    chartConfig["animation"] = ""
 
-    datasource = OrderedDict()
+    datasource = dict()
     datasource["Chart"] = chartConfig
     datasource["data"] = []
 
