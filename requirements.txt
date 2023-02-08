@@ -20,7 +20,7 @@ kiwisolver==1.2.0
 lxml==4.6.2
 MarkupSafe==1.1.1
 mccabe==0.6.1
-numpy==1.19.2
+numpy==1.24.0
 pandas==1.1.2
 pip==20.2.4
 psycopg2==2.8.6
